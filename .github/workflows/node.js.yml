@@ -26,10 +26,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
+    - run: npm test
     
     - name: Deploy to aliyun server
       run: |
-        docker login --username=${{ secrets.USERNAME }} --password-stdin ${{ secrets.PASSWORD }} registry.cn-hangzhou.aliyuncs.com
+        docker login --username=${{ secrets.USERNAME }} --password ${{ secrets.PASSWORD }} registry.cn-hangzhou.aliyuncs.com
         docker build . -t ${{ secrets.REGISTRY }}:$GITHUB_RUN_NUMBER
         docker push ${{ secrets.REGISTRY }}:$GITHUB_RUN_NUMBER
         docker tag $(docker images ${{ secrets.REGISTRY }}:$GITHUB_RUN_NUMBER -q) ${{ secrets.REGISTRY }}:latest
